@@ -10,11 +10,11 @@ public class Test
 {
     static Scanner scanner = new Scanner(System.in);
 
-    // Yêu cầu 4: danh sách các đối tượng Sach quản lý bằng ArrayList
+    // Danh sách các đối tượng Sach quản lý bằng ArrayList
     static ArrayList<Sach> danhSach = new ArrayList<>();
 
     // File lưu dữ liệu (nằm trong thư mục đang chạy chương trình)
-    static final String FILE_SACH = "sach_tuan7.txt";
+    static final String FILE_SACH = "sach_tuan8.txt";
 
     // Lưu và đọc file
 
@@ -118,44 +118,91 @@ public class Test
         }
     }
 
-    // Yêu cầu 3: tạo đối tượng từ lớp Sach
-
-    static void yeuCau3()
+    // Nhập năm xuất bản, lặp lại cho đến khi hợp lệ (dùng hàm kiểm tra của lớp Sach)
+    static int docNamXuatBan()
     {
-        System.out.println("YÊU CẦU 3: TẠO ĐỐI TƯỢNG TỪ LỚP SACH");
-
-        // Tạo đối tượng bằng từ khóa new
-        Sach sach1 = new Sach("B01", "Lập trình Java cơ bản", "Nguyễn Văn A", 2022, 15);
-        Sach sach2 = new Sach("B02", "Cấu trúc dữ liệu", "Trần Thị B", 2021, 7);
-        Sach sach3 = new Sach("B03", "Cơ sở dữ liệu", "Lê Văn C", 2020, 0);
-
-        // Gọi phương thức hienThiThongTin() của từng đối tượng
-        System.out.println("Sách thứ nhất:");
-        sach1.hienThiThongTin();
-        System.out.println();
-
-        System.out.println("Sách thứ hai:");
-        sach2.hienThiThongTin();
-        System.out.println();
-
-        System.out.println("Sách thứ ba:");
-        sach3.hienThiThongTin();
-        System.out.println();
-
-        // Thay đổi thuộc tính của đối tượng rồi hiển thị lại
-        System.out.println("Sau khi nhập thêm 10 cuốn cho sách thứ ba:");
-        sach3.soLuong = sach3.soLuong + 10;
-        sach3.hienThiThongTin();
+        int nam;
+        do
+        {
+            nam = docSoNguyen("Nhập năm xuất bản: ");
+            if (!Sach.namXuatBanHopLe(nam))
+            {
+                System.out.println("  -> Năm xuất bản phải lớn hơn 0 và không lớn hơn năm hiện tại!");
+            }
+        }
+        while (!Sach.namXuatBanHopLe(nam));
+        return nam;
     }
 
-    // Yêu cầu 4: quản lý danh sách Sach bằng ArrayList
+    // Nhập số lượng, lặp lại cho đến khi hợp lệ
+    static int docSoLuong()
+    {
+        int soLuong;
+        do
+        {
+            soLuong = docSoNguyen("Nhập số lượng (>= 0): ");
+            if (!Sach.soLuongHopLe(soLuong))
+            {
+                System.out.println("  -> Số lượng không được âm!");
+            }
+        }
+        while (!Sach.soLuongHopLe(soLuong));
+        return soLuong;
+    }
+
+    // Demo tính đóng gói (Yêu cầu 1, 2, 3, 4)
+
+    static void demoDongGoi()
+    {
+        System.out.println("DEMO TÍNH ĐÓNG GÓI");
+
+        // Yêu cầu 4: tạo đối tượng bằng constructor có đầy đủ tham số
+        System.out.println("1. Tạo sách bằng constructor đầy đủ tham số:");
+        Sach sach = new Sach("B01", "Lập trình Java cơ bản", "Nguyễn Văn A", 2022, 15);
+        sach.hienThiThongTin();
+        System.out.println();
+
+        // Yêu cầu 1: thuộc tính private nên không thể viết sach.soLuong = 100
+        // Nếu bỏ dấu // ở dòng dưới, chương trình sẽ báo lỗi biên dịch:
+        // sach.soLuong = 100;
+
+        // Yêu cầu 2: dùng getter để lấy giá trị
+        System.out.println("2. Dùng getter để lấy giá trị:");
+        System.out.println("Tiêu đề  : " + sach.getTieuDe());
+        System.out.println("Số lượng : " + sach.getSoLuong());
+        System.out.println();
+
+        // Yêu cầu 2 và 3: dùng setter, giá trị hợp lệ thì được thay đổi
+        System.out.println("3. Dùng setter với giá trị hợp lệ:");
+        sach.setSoLuong(20);
+        sach.setNamXuatBan(2023);
+        System.out.println("Số lượng mới      : " + sach.getSoLuong());
+        System.out.println("Năm xuất bản mới  : " + sach.getNamXuatBan());
+        System.out.println();
+
+        // Yêu cầu 3: giá trị sai bị từ chối
+        System.out.println("4. Dùng setter với giá trị sai:");
+        sach.setSoLuong(-5);
+        sach.setNamXuatBan(3000);
+        sach.setNamXuatBan(0);
+        System.out.println("Số lượng vẫn là      : " + sach.getSoLuong());
+        System.out.println("Năm xuất bản vẫn là  : " + sach.getNamXuatBan());
+        System.out.println();
+
+        // Yêu cầu 3 kết hợp yêu cầu 4: constructor cũng kiểm tra dữ liệu
+        System.out.println("5. Tạo sách với dữ liệu sai (năm 3000, số lượng -1):");
+        Sach sachLoi = new Sach("B02", "Sách thử lỗi", "Không rõ", 3000, -1);
+        sachLoi.hienThiThongTin();
+    }
+
+    // Quản lý danh sách Sach bằng ArrayList (dùng getter và setter)
 
     // Tìm vị trí cuốn sách theo mã, trả về -1 nếu không có
     static int timViTri(String ma)
     {
         for (int i = 0; i < danhSach.size(); i++)
         {
-            if (danhSach.get(i).maSach.equalsIgnoreCase(ma))
+            if (danhSach.get(i).getMaSach().equalsIgnoreCase(ma))
             {
                 return i;
             }
@@ -179,42 +226,16 @@ public class Test
         return ma;
     }
 
-    // Nhập thông tin một cuốn sách (mã đã có sẵn), trả về đối tượng Sach
-    static Sach nhapSach(String ma)
-    {
-        String tieuDe = docChuoi("Nhập tiêu đề: ");
-        String tacGia = docChuoi("Nhập tác giả: ");
-
-        int namXuatBan;
-        do
-        {
-            namXuatBan = docSoNguyen("Nhập năm xuất bản (1901 - 2026): ");
-            if (namXuatBan <= 1900 || namXuatBan > 2026)
-            {
-                System.out.println("  -> Năm xuất bản không hợp lệ!");
-            }
-        }
-        while (namXuatBan <= 1900 || namXuatBan > 2026);
-
-        int soLuong;
-        do
-        {
-            soLuong = docSoNguyen("Nhập số lượng (>= 0): ");
-            if (soLuong < 0)
-            {
-                System.out.println("  -> Số lượng không được âm!");
-            }
-        }
-        while (soLuong < 0);
-
-        return new Sach(ma, tieuDe, tacGia, namXuatBan, soLuong);
-    }
-
     // 1. Thêm sách
     static void themSach()
     {
         String ma = nhapMaMoi();
-        danhSach.add(nhapSach(ma));
+        String tieuDe = docChuoi("Nhập tiêu đề: ");
+        String tacGia = docChuoi("Nhập tác giả: ");
+        int namXuatBan = docNamXuatBan();
+        int soLuong = docSoLuong();
+
+        danhSach.add(new Sach(ma, tieuDe, tacGia, namXuatBan, soLuong));
         luuFile();
         System.out.println("Đã thêm sách. Hiện có " + danhSach.size() + " cuốn.");
     }
@@ -249,7 +270,7 @@ public class Test
         for (int i = 0; i < danhSach.size(); i++)
         {
             Sach s = danhSach.get(i);
-            if (s.maSach.toLowerCase().contains(tuKhoa) || s.tieuDe.toLowerCase().contains(tuKhoa))
+            if (s.getMaSach().toLowerCase().contains(tuKhoa) || s.getTieuDe().toLowerCase().contains(tuKhoa))
             {
                 dem++;
                 System.out.println("Kết quả " + dem + " (vị trí " + (i + 1) + ")");
@@ -292,7 +313,7 @@ public class Test
         }
     }
 
-    // 5. Sửa sách (giữ nguyên mã, nhập lại các thông tin còn lại)
+    // 5. Sửa sách: dùng các setter để thay đổi thông tin (giữ nguyên mã sách)
     static void suaSach()
     {
         if (danhSach.isEmpty())
@@ -307,11 +328,14 @@ public class Test
             System.out.println("Không tìm thấy sách có mã \"" + ma + "\".");
             return;
         }
-        Sach cu = danhSach.get(viTri);
+        Sach s = danhSach.get(viTri);
         System.out.println("Thông tin hiện tại:");
-        cu.hienThiThongTin();
+        s.hienThiThongTin();
         System.out.println("Nhập thông tin mới (giữ nguyên mã sách):");
-        danhSach.set(viTri, nhapSach(cu.maSach));
+        s.setTieuDe(docChuoi("Nhập tiêu đề: "));
+        s.setTacGia(docChuoi("Nhập tác giả: "));
+        s.setNamXuatBan(docNamXuatBan());
+        s.setSoLuong(docSoLuong());
         luuFile();
         System.out.println("Đã cập nhật sách.");
     }
@@ -327,19 +351,19 @@ public class Test
         int tong = 0;
         for (int i = 0; i < danhSach.size(); i++)
         {
-            tong += danhSach.get(i).soLuong;
+            tong += danhSach.get(i).getSoLuong();
         }
         System.out.println("Số đầu sách        : " + danhSach.size());
         System.out.println("Tổng số lượng sách : " + tong);
     }
 
-    static void yeuCau4()
+    static void quanLyDanhSach()
     {
         int chon;
         do
         {
             System.out.println();
-            System.out.println("YÊU CẦU 4: QUẢN LÝ DANH SÁCH SÁCH (ArrayList<Sach>)");
+            System.out.println("QUẢN LÝ DANH SÁCH SÁCH (ArrayList<Sach>)");
             System.out.println("1. Thêm sách");
             System.out.println("2. Hiển thị sách");
             System.out.println("3. Tìm sách");
@@ -391,19 +415,19 @@ public class Test
         do
         {
             System.out.println();
-            System.out.println("BÀI THỰC HÀNH TUẦN 7: LỚP VÀ ĐỐI TƯỢNG");
-            System.out.println("1. Yêu cầu 3: Tạo đối tượng từ lớp Sach");
-            System.out.println("2. Yêu cầu 4: Quản lý danh sách Sach bằng ArrayList");
+            System.out.println("BÀI THỰC HÀNH TUẦN 8: TÍNH ĐÓNG GÓI");
+            System.out.println("1. Demo tính đóng gói (private, getter, setter, constructor)");
+            System.out.println("2. Quản lý danh sách sách bằng ArrayList");
             System.out.println("0. Thoát chương trình");
             chon = docSoNguyen("Mời bạn chọn: ");
 
             switch (chon)
             {
                 case 1:
-                    yeuCau3();
+                    demoDongGoi();
                     break;
                 case 2:
-                    yeuCau4();
+                    quanLyDanhSach();
                     break;
                 case 0:
                     System.out.println("Đã thoát chương trình. Tạm biệt!");
